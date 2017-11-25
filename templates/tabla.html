@@ -1,0 +1,31 @@
+{% extends "baseventas.html" %}
+
+{% block title %}Base de Datos{% endblock %}
+
+{% block page_content %}
+
+<div id="wrapper" class="container">
+
+    <h1>Listado</h1>
+
+<table class="table">
+      <tr>
+        <th>{{header[0]}}</th>
+        <th>{{header[1]}}</th>
+        <th>{{header[2]}}</th>
+        <th>{{header[3]}}</th>
+        <th>{{header[4]}}</th>
+      </tr>
+    {% for line in clientes %}
+      <tr>
+        <td>{{ line[0] }}</td>
+        <td>{{ line[1] }}</td>
+        <td>{{ line[2] }}</td>
+        <td>{{ line[3] }}</td>
+        <td>{{ line[4] }}</td>
+
+      </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
