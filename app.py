@@ -52,7 +52,7 @@ class  validarCSV():
                 try:
                     precio = float(row["PRECIO"])
                 except:
-                    raise CSVError(" El campo PRECIO no contiene valores decimales error")
+                    raise CSVError(" El campo PRECIO no contiene valores decimales")
 
         return rows
 
@@ -159,7 +159,7 @@ def pmv():
             rows = validarCSV().leerCSV()
         except CSVError as error:
             return render_template('errorCSV.html', error = error)  
-        header=['CODIGO', 'PRODUCTO', 'CANTIDAD']               
+        header=['CODIGO', 'PRODUCTO', 'CANTIDAD DE PRODUCTOS']               
         nproductos = archivo.nproductos("farmacia.csv")
         return render_template("pmv.html", header = header, nproductos = nproductos, username = session.get('username'))
     return redirect(url_for('login'))
@@ -175,7 +175,7 @@ def cmg():
             rows = validarCSV().leerCSV()
         except CSVError as error:
             return render_template('errorCSV.html', error = error)  
-        header=['CODIGO', 'CLIENTE', 'TOTAL']         
+        header=['CODIGO', 'CLIENTE', 'TOTAL GASTADO']         
         nclientes = archivo.nclientes("farmacia.csv")
         return render_template("cmg.html", header = header, nclientes = nclientes, username = session.get('username'))
     return redirect(url_for('login'))
@@ -241,4 +241,3 @@ def logout():
 
 if __name__ == "__main__":
    app.run(debug=True)
-
