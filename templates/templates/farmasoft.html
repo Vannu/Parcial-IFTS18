@@ -1,0 +1,27 @@
+{% extends "baseventas.html" %}
+
+{% block title %}FarmaSoft{% endblock %}
+
+{% block page_content %}
+
+<form method="POST" action="/register">
+
+    <h1>Bienvenido, {{ username }}!</h1>
+    <a class="btn btn-default" href="/logout">Salir</a>
+</form>
+
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+
+{% endblock %}
