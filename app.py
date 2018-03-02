@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import csv
-from flask import Flask, render_template, redirect, url_for, flash, session
+from flask import Flask, render_template, redirect, url_for, flash, session, send_file
 from flask_bootstrap import Bootstrap
-from forms import LoginForm, RegistrarForm, Consulta_Cliente, Consulta_Producto
+from forms import LoginForm, RegistrarForm, Consulta_Cliente, Consulta_Producto, Nueva_Contrasenia
 import archivo
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -52,7 +53,7 @@ class  validarCSV():
                 try:
                     precio = float(row["PRECIO"])
                 except:
-                    raise CSVError(" El campo PRECIO no contiene valores decimales")
+                    raise CSVError(" El campo PRECIO no contiene valores decimales error")
 
         return rows
 
@@ -101,6 +102,30 @@ def ingresar():
                 return redirect(url_for('ingresar'))
     return render_template('login.html', formulario=formulario, username=session.get('username'))
 
+#----------------------- CAMBIAR CONTRASEÑA  -----------------------
+#ubicada en el menu superior, en perfil.
+#Cambiar la información personal, en este caso cambiar la contraseña de nuestra cuenta usuario.
+
+@app.route('/nueva_contrasenia', methods=['GET', 'POST'])
+def cambiar_contrasenia():
+    if session.get("username"):
+        nombre_usuario=session['username']
+        form = Nueva_Contrasenia()
+        if form.validate_on_submit():
+            
+            if form.nContrasenia.data == form.rContrasenia.data:
+                archivo.grabar_lista(nombre_usuario,form.nContrasenia.data)
+                flash("Ha cambiado la contraseña con exito")
+                return render_template('farmasoft.html', form=form, username = session.get('username'))
+            else:
+                flash("contraseña incorrecta")
+                return render_template('nueva_contrasenia.html', form=form, username = session.get('username'))
+            
+        return render_template('nueva_contrasenia.html', form=form, username = session.get('username'))
+    flash('Debe estar logueado para acceder')
+    return redirect(url_for('login'))
+
+
 
 #----------------------- REGISTRACION - NUEVO USUARIO  -----------------------
 #Al crear nuevo usuario se redirecciona a la pagina de ingreso
@@ -122,6 +147,8 @@ def registrar():
         else:
             flash('Las passwords no matchean')
     return render_template('registrar.html', form=formulario)
+
+
 
 
 #------------------------ PAGINA DE BIENVENIDA DEL USUARIO -------------------------
@@ -159,7 +186,7 @@ def pmv():
             rows = validarCSV().leerCSV()
         except CSVError as error:
             return render_template('errorCSV.html', error = error)  
-        header=['CODIGO', 'PRODUCTO', 'CANTIDAD DE PRODUCTOS']               
+        header=['CODIGO', 'PRODUCTO', 'CANTIDAD']               
         nproductos = archivo.nproductos("farmacia.csv")
         return render_template("pmv.html", header = header, nproductos = nproductos, username = session.get('username'))
     return redirect(url_for('login'))
@@ -175,7 +202,7 @@ def cmg():
             rows = validarCSV().leerCSV()
         except CSVError as error:
             return render_template('errorCSV.html', error = error)  
-        header=['CODIGO', 'CLIENTE', 'TOTAL GASTADO']         
+        header=['CODIGO', 'CLIENTE', 'TOTAL']         
         nclientes = archivo.nclientes("farmacia.csv")
         return render_template("cmg.html", header = header, nclientes = nclientes, username = session.get('username'))
     return redirect(url_for('login'))
@@ -227,6 +254,19 @@ def cxp():
     return redirect(url_for('login'))
 
 
+#-------------------- DESCARGAR CONSULTA ----------------------------
+# Condatatime.now obtenemos la fecha y hora actual
+# Y por último renombramos al archivo como (Resultados_Y-m-d H:M:S)
+# En cada consulta utilizo Pandas (librería) para exportar los datos con la consulta referida.
+
+@app.route('/descargar/')
+def descarga():
+    if 'username' in session: 
+        formato = datetime.now() 
+        nombrearchivo = "Resultados_"+str(formato.year)+str(formato.month)+str(formato.day)+"_"+str(formato.hour)+str(formato.minute)+str(formato.second)+".csv" 
+        return send_file('descarga.csv', as_attachment=True,attachment_filename=nombrearchivo)
+    return redirect(url_for('login'))
+
 
 #-------------------- DESLOGEARSE ----------------------------
 # cerrar sesion 
@@ -240,4 +280,4 @@ def logout():
 
 
 if __name__ == "__main__":
-   app.run(debug=True)
+    app.run(debug=True)

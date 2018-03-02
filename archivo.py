@@ -12,6 +12,7 @@ def cargar_archivo(farmacia):
     with open('farmacia.csv')as archivo:
          datos=pd.read_csv(archivo)        
          cols = datos.as_matrix(columns=head)
+         datos.reset_index().to_csv('descarga.csv', header=True, index=False)
          return cols
 
 #Consulta de productos mas vendidos   
@@ -25,8 +26,9 @@ def nproductos(farmacia):
     datos = df.groupby(by=['CODIGO','PRODUCTO'], as_index=False).sum()
     datos = datos.sort_values(by=['CANTIDAD'], ascending=False)
     datos = datos.head(10)
-    datos = datos.as_matrix(columns=['CODIGO', 'PRODUCTO', 'CANTIDAD'])
-    return datos
+    data = datos.as_matrix(columns=['CODIGO', 'PRODUCTO', 'CANTIDAD'])
+    datos.reset_index().to_csv('descarga.csv', header=True, index=False)
+    return data
 
 #Consulta de los mejores clientes   
 def nclientes(farmacia):
@@ -42,8 +44,9 @@ def nclientes(farmacia):
     datos = df.groupby(by=['CODIGO','CLIENTE'], as_index=False).sum()
     datos = datos.sort_values(by=['total'], ascending=False)
     datos = datos.head(10)
-    datos = datos.as_matrix(columns=['CODIGO', 'CLIENTE', 'total'])
-    return datos
+    data = datos.as_matrix(columns=['CODIGO', 'CLIENTE', 'total'])
+    datos.reset_index().to_csv('descarga.csv', header=True, index=False)
+    return data
 
 #Consulta de productos por cliente
 def productos_por_clientes(Consulta_Cliente):
@@ -51,9 +54,10 @@ def productos_por_clientes(Consulta_Cliente):
     """ Agrupo los datos de las columnas a mostrar """  
     """  retorno las columnas """
     df = pd.read_csv('farmacia.csv') 
-    data_cliente = df[df.CLIENTE == Consulta_Cliente]
-    data_cliente = data_cliente.groupby(by=['CODIGO', 'PRODUCTO', 'CLIENTE'], as_index=False).sum()
-    data_cliente = data_cliente.as_matrix(columns=['CODIGO', 'PRODUCTO', 'CLIENTE'])
+    datos = df[df.CLIENTE == Consulta_Cliente]
+    datos = datos.groupby(by=['CODIGO', 'PRODUCTO', 'CLIENTE'], as_index=False).sum()
+    data_cliente = datos.as_matrix(columns=['CODIGO', 'PRODUCTO', 'CLIENTE'])
+    datos.reset_index().to_csv('descarga.csv', header=True, index=False)
     return data_cliente
 
 #Consulta de clientes por productos
@@ -62,9 +66,10 @@ def clientes_por_productos(Consulta_Producto):
     """ Agrupo los datos de las columnas a mostrar """  
     """  retorno las columnas """    
     df = pd.read_csv('farmacia.csv') 
-    data_producto = df[df.PRODUCTO == Consulta_Producto]
-    data_producto = data_producto.groupby(by=['CODIGO', 'PRODUCTO', 'CLIENTE'], as_index=False).sum()
-    data_producto = data_producto.as_matrix(columns=['CODIGO', 'PRODUCTO', 'CLIENTE'])
+    datos = df[df.PRODUCTO == Consulta_Producto]
+    datos = datos.groupby(by=['CODIGO', 'PRODUCTO', 'CLIENTE'], as_index=False).sum()
+    data_producto = datos.as_matrix(columns=['CODIGO', 'PRODUCTO', 'CLIENTE'])
+    datos.reset_index().to_csv('descarga.csv', header=True, index=False)
     return data_producto
 
 #listado de clientes y productos
@@ -80,4 +85,21 @@ def lista_productos():
     df = pd.read_csv('farmacia.csv') 
     listaproductos = df['PRODUCTO']
     return  listaproductos
+
+
+
+def grabar_lista(user,npass) :
+    """"Guardo el dato en archivo csv y sobreescribo el existente."""
+    datos=[user,npass]
+    with open('usuarios',newline='') as archivo:
+        archreader=csv.reader(archivo.readlines())
+    with open('usuarios','r+', newline='') as archivo:
+        archwriter=csv.writer(archivo)
+        for row in archreader:
+            
+            if row[0]==datos[0]:
+                archwriter.writerow(datos)
+            else:
+                archwriter.writerow(row)
+
 

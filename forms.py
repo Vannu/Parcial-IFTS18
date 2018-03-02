@@ -24,3 +24,15 @@ class Consulta_Producto(FlaskForm):
     producto = StringField('Producto', [validators.data_required(message = "Ingrese producto"), validators.Length(min = 3, message = "Minimo 3 caracteres")])
     busqueda = SubmitField('Buscar')
 
+
+#Cambiar la contraseña de la cuenta usuario
+
+class Nueva_Contrasenia(FlaskForm):
+
+    nContrasenia = PasswordField('Nueva Contraseña',[validators.data_required(),validators.EqualTo("rContrasenia",message = "Debe ingresar la misma contraseña")])
+    rContrasenia= PasswordField('Repetir Contraseña', [validators.data_required(message = "Debe ingresar la misma contraseña")])
+    submit = SubmitField("Enviar")
+
+
+
+
