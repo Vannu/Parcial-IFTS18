@@ -68,8 +68,7 @@ def index():
 
 
 #------------------------   ERRORES  ---------------------
-# Pagina de inicio "FARMA", con menu de ingresar y crear nuevo usuario
-#pagina de resultados no encontrado
+#Pagina de resultados no encontrado
 @app.errorhandler(404)
 def no_encontrado(e):
     return render_template('404.html'), 404
