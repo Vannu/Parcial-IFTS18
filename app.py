@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'un string que funcione como llave'
 #------------------------  VALIDACION DEL ARCHIVO  -----------------
 
 '''Pruebas de datos inexistentes'''
-'''Que campo cantidad inavalida de campos'''
+'''Cantidad inavalida de campos'''
 '''Que campo CODIGO no contenga campos vacios'''
 '''Que campo CANTIDAD no contenga una valor entero'''
 '''Que campo PRECIO no contenga un valor decimal'''
